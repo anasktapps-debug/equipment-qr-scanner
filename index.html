@@ -125,43 +125,38 @@
     }
 
 
-    function closeScanner() {
+   function closeScanner() {
 
-      if (scanner) {
+  if (scanner) {
 
-        scanner.stop()
-          .then(function() {
+    scanner.stop()
+      .then(function() {
 
-            scanner.clear();
-            scanner = null;
+        scanner.clear();
+        scanner = null;
 
-            document.getElementById("reader").innerHTML = "";
-            document.getElementById("message").innerText =
-              "Camera closed.";
+        window.close();
 
-          })
-          .catch(function() {
+      })
+      .catch(function() {
 
-            try {
-              scanner.clear();
-            } catch (e) {}
+        try {
+          scanner.clear();
+        } catch (e) {}
 
-            scanner = null;
+        scanner = null;
 
-            document.getElementById("reader").innerHTML = "";
-            document.getElementById("message").innerText =
-              "Camera closed.";
+        window.close();
 
-          });
+      });
 
-      } else {
+  } else {
 
-        document.getElementById("message").innerText =
-          "Camera closed.";
+    window.close();
 
-      }
-    }
+  }
 
+}
 
     window.onload = function() {
       startScanner();
