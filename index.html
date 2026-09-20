@@ -92,60 +92,21 @@
   document.getElementById("message").innerText =
     "QR detected. Opening Equipment...";
 
-  let scannedId = decodedText;
-
-  if (decodedText.includes("eqId=")) {
-    const parts = decodedText.split("eqId=");
-    scannedId = decodeURIComponent(parts[1].split("&")[0]);
-  }
-
   scanner.stop()
     .then(function() {
 
       scanner.clear();
 
-      if (window.opener && !window.opener.closed) {
-
-        window.opener.postMessage(
-          {
-            type: "equipmentQR",
-            equipmentId: scannedId
-          },
-          "https://script.google.com"
-        );
-
-        window.close();
-
-      } else {
-
-        window.location.href = decodedText;
-
-      }
+      // QR contains the Equipment Management URL
+      window.location.href = decodedText;
 
     })
     .catch(function() {
 
-      if (window.opener && !window.opener.closed) {
-
-        window.opener.postMessage(
-          {
-            type: "equipmentQR",
-            equipmentId: scannedId
-          },
-          "https://script.google.com"
-        );
-
-        window.close();
-
-      } else {
-
-        window.location.href = decodedText;
-
-      }
+      window.location.href = decodedText;
 
     });
 },
-
         function(errorMessage) {
           // Ignore normal scanning errors
         }
