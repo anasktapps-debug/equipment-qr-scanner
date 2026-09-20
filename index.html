@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>Equipment QR Scanner</title>
+
+  <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
+
+  <style>
+    body {
+      margin: 0;
+      padding: 20px;
+      font-family: Arial, sans-serif;
+      background: #f2f4f7;
+      text-align: center;
+    }
+
+    .scanner-box {
+      max-width: 500px;
+      margin: 30px auto;
+      background: white;
+      padding: 20px;
+      border-radius: 15px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+    }
+
+    h2 {
+      margin-bottom: 20px;
+    }
+
+    #reader {
+      width: 100%;
+      max-width: 400px;
+      margin: auto;
+    }
+
+    button {
+      margin-top: 20px;
+      padding: 12px 25px;
+      border: none;
+      border-radius: 8px;
+      background: #d32f2f;
+      color: white;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    #message {
+      margin-top: 15px;
+      font-weight: bold;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="scanner-box">
+
+    <h2>📷 Equipment QR Scanner</h2>
+
+    <div id="reader"></div>
+
+    <p id="message">Camera starting...</p>
+
+    <button onclick="closeScanner()">Close Camera</button>
+
+  </div>
+
+  <script>
+
+    let scanner = null;
+
+    function startScanner() {
+
+      scanner = new Html5Qrcode("reader");
+
+      const config = {
+        fps: 10,
+        qrbox: {
+          width: 250,
+          height: 250
+        }
+      };
+
+      scanner.start(
+        { facingMode: "environment" },
+        config,
+
+        function(decodedText) {
+
+          document.getElementById("message").innerText =
+            "QR detected. Opening Equipment...";
+
+          scanner.stop()
+            .then(function() {
+
+              scanner.clear();
+
+              // QR contains the Equipment Management URL
+              window.location.href = decodedText;
+
+            })
+            .catch(function() {
+
+              window.location.href = decodedText;
+
+            });
+        },
+
+        function(errorMessage) {
+          // Ignore normal scanning errors
+        }
+
+      ).catch(function(error) {
+
+        document.getElementById("message").innerText =
+          "Camera permission required.";
+
+        alert(
+          "Camera access അനുവദിച്ചിട്ടില്ല.\n\n" +
+          "Browser Camera Permission Allow ചെയ്യുക."
+        );
+
+      });
+    }
+
+
+    function closeScanner() {
+
+      if (scanner) {
+
+        scanner.stop()
+          .then(function() {
+
+            scanner.clear();
+            scanner = null;
+
+            document.getElementById("reader").innerHTML = "";
+            document.getElementById("message").innerText =
+              "Camera closed.";
+
+          })
+          .catch(function() {
+
+            try {
+              scanner.clear();
+            } catch (e) {}
+
+            scanner = null;
+
+            document.getElementById("reader").innerHTML = "";
+            document.getElementById("message").innerText =
+              "Camera closed.";
+
+          });
+
+      } else {
+
+        document.getElementById("message").innerText =
+          "Camera closed.";
+
+      }
+    }
+
+
+    window.onload = function() {
+      startScanner();
+    };
+
+  </script>
+
+</body>
+</html>
